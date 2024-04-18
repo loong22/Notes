@@ -1053,8 +1053,269 @@ deb http://security.ubuntu.com/ubuntu/ focal-security main restricted universe m
 sudo apt-get update
 ```
 
+## 15 Linux修改ssh登录端口
+```bash
+#确保新端口在防火墙中放行（1）关闭防火墙：/etc/init.d/iptables stop
+或者service iptables stop
+或者在防火墙过滤规则中上增加一条，允许对新增的端口的访问：vi /etc/sysconfig/iptables
+新增一条策略，放通新端口。例如新端口为12022：-A INPUT -m state --state NEW -m tcp -p tcp --dport 12022 -j ACCEPT
+（2）编辑ssh配置文件vim /etc/ssh/sshd_config
+修改#Port 22，去掉#号，端口设置为新端口
+（3）重启ssh服务systemctl restart sshd
+或者/etc/init.d/sshd restart
+```
 
+## 16 Linux自动封禁ssh登录失败的ip(防止暴力破解)
+```bash
+#防止暴力破解（1）编写脚本定期将登录失败的IP添加进入黑名单中touch ssh.sh
+chmod +x ssh.sh
+vim ssh.sh
+（2）ssh.sh内容如下：#!/bin/bash#输入三次错误密码自动封禁ipiplist=$(/bin/lastb |awk '{print $3}'|sort|uniq -c|awk '{if ($1>3) print $2}')#追加到黑名单并清空登录日志for ip in ${iplist}doecho ALL: ${ip} >> /etc/hosts.deny
+echo > /var/log/btmp
+done（3）设置定时执行#编辑crontabcrontab -e#添加定时脚本命令，每分钟执行一次0 */1 * * * sh /root/ssh.sh
+```
 
+## 17 Linux修改网络配置
+```bash
+#(1)debian系统配置文件位置为：/etc/network/interfaces修改后保存配置后，运行/etc/init.d/networking restart
+网络配置就改变了
+#(2)redhat系统配置文件位置为：/etc/sysconfig/network-scripts/ifcfg-eth0TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=dhcp
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=eth0
+UUID=e5f4078b-ebf0-46bb-9545-1ab724d541bc
+DEVICE=eth0
+ONBOOT=no
+DNS1=8.8.8.8
+DNS2=8.8.4.4
+修改后保存配置后，运行/etc/init.d/network restart
+或者service network restart
+网络配置就改变了默认DNS的文件的位置为：/etc/resolv.confcat /etc/resolv.conf
+search test.com.cn
+nameserver 192.168.1.11
+```
+
+## 18 Linux修改DNS地址
+```bash
+（1）HOST 本地DNS解析
+vi /etc/hosts
+添加规则 例如:
+223.231.234.33 www.baidu.com
+（2）网卡配置文件DNS服务地址vi /etc/sysconfig/network-scripts/ifcfg-eth0
+添加规则 例如:
+DSN1=’114.114.114.114’
+（3）系统默认DNS配置vi /etc/resolv.conf
+添加规则 例如:
+nameserver 114.114.114.114
+#系统解析的优先级1>2>3
+```
+
+## 19 Linux 禁用 ping,icmp
+```bash
+#永久修改文件 /etc/sysctl.conf，在文件末尾增加一行：
+net.ipv4.icmp_echo_ignore_all = 1
+如果已经有 net.ipv4.icmp_echo_ignore_all 这一行了，直接修改 = 号后面的值即可的 0 表示允许，1 表示禁止。
+修改完成后执行 sysctl -p 使新配置生效（重要）
+```
+
+## 20 Linux iptables基础
+
+```bash
+（1）放行所有端口iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+（2）保存iptables规则#安装iptables-persistent组件apt-get install iptables-persistent
+#执行下面的命令自动保存当前的规则，重启自动生效sudo dpkg-reconfigure iptables-persistent
+#保险起见，执行下列2条命令，覆盖rules.v4文件iptables-save > iptables.conf#保存规则到文件
+cp iptables.conf /etc/iptables/rules.v4#覆盖文件，重启自动生效
+#恢复保存的iptables.conf文件iptables-restore < iptables.conf
+（3）iptables设置端口仅允许指定ip访问#先丢弃所有包——如果是ssh端口则必须在VNC界面执行，否则ssh连接会直接断开iptables -I INPUT -p TCP --dport 40000 -j DROP
+#允许指定ip访问特定端口iptables -I INPUT -s 202.81.229.55 -p TCP --dport 40000 -j ACCEPT
+（4）iptables常见命令iptables -L -n --line-number #查看到每个规则chain的序列号。iptables -D INPUT 3 #删除INPUT的第三条已添加规则，这里3代表第几行规则#iptables防火墙service iptables status #查看iptables防火墙状态service iptables start #开启防火墙service iptables stop #停止防火墙#firewall防火墙systemctl status firewalld #查看firewall防火墙服务状态service firewalld start #开启防火墙service firewalld stop #关闭防火墙（5）iptables限制指定端口网速#hashlimit-name必须是唯一的。#HKIX限速iptables -A INPUT -p tcp --dport 10000:65500 -m hashlimit --hashlimit-name conn_limitA --hashlimit-htable-expire 30000 --hashlimit-upto 3500kb/s --hashlimit-mode srcip --hashlimit-burst 3575kb -j ACCEPT
+iptables -A INPUT -p tcp --dport 10000:65500 -j DROP
+iptables -A OUTPUT -p tcp --sport 10000:65500 -m hashlimit --hashlimit-name conn_limitB --hashlimit-htable-expire 30000 --hashlimit-upto 3500kb/s --hashlimit-mode dstip --hashlimit-burst 3575kb -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 10000:65500 -j DROP
+#US限速iptables -A INPUT -p tcp --dport 10000:65500 -m hashlimit --hashlimit-name conn_limitA --hashlimit-htable-expire 30000 --hashlimit-upto 15000kb/s --hashlimit-mode srcip --hashlimit-burst 15010kb -j ACCEPT
+iptables -A INPUT -p tcp --dport 10000:65500 -j DROP
+iptables -A OUTPUT -p tcp --sport 10000:65500 -m hashlimit --hashlimit-name conn_limitB --hashlimit-htable-expire 30000 --hashlimit-upto 15000kb/s --hashlimit-mode dstip --hashlimit-burst 15010kb -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 10000:65500 -j DROP
+（6）iptables禁icmp\\pingiptables -A INPUT -p icmp --icmp-type echo-request -j DROP
+iptables -A OUTPUT -p icmp --icmp-type echo-request -j DROP
+```
+
+## 21 RedHat 挂载光盘作为本地源
+
+```bash
+（1）挂载光盘到指定目录mount -t iso9660 /dev/cdrom /mnt/cdrom
+（2）挂载作为本地源cd /etc/yum.repos.d
+#如有repo文件，先备份为.bak文件，然后删除repo文件，否则会冲突#例如：#cp centos.repo centos.repo && rm centos.repo编辑本地源文件local.repovim /etc/yum.repos.d/local.repo
+（3）修改为以下内容
+[local]
+name=cdrom
+baseurl=file:///mnt/cdrom
+enabled=1
+gpgcheck=0
+#gpgkey=file:///mnt/cdrom/***
+```
+
+### 21.1 RedHat软件包相关操作
+
+```bash
+列出所有可更新的软件清单命令：yum check-update
+更新所有软件命令：yum update
+仅安装指定的软件命令：yum install <package_name>仅更新指定的软件命令：yum update <package_name>列出所有可安裝的软件清单命令：yum list
+删除软件包命令：yum remove <package_name>查找软件包命令：yum search keyword
+清除缓存命令:yum clean packages: 清除缓存目录下的软件包
+yum clean headers: 清除缓存目录下的 headers
+yum clean oldheaders: 清除缓存目录下旧的 headers
+yum clean, yum clean all (= yum clean packages; yum clean oldheaders) :清除缓存目录下的软件包及旧的 headers
+#Centos设置国内源（1）备份/etc/yum.repos.d/CentOS-Base.repomv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup（2）下载对应版本 repo 文件, 放入 /etc/yum.repos.d/ (操作前请做好相应备份)例如：<http://mirrors.163.com/.help/CentOS7-Base-163.repo><https://lug.ustc.edu.cn/wiki/mirrors/help/centos>
+```
+
+### 21.2 yum报错python
+
+```
+yum 报错的原因是安装了高版本的Python，而yum默认的是低版本的。
+将/usr/bin/yum 和 /usr/libexec/urlgrabber-ext-down 两个文件的第一行
+#!/usr/bin/python
+改成 如下，保存退出就可以了
+#!/usr/bin/python2.7
+```
+
+### 21.3 Centos安装certbot
+
+```
+#先安装 snapd，使用 snap 安装 certbot 可以隔离环境影响
+yum install snapd
+# 设置为开机启动并立即启动
+sudo systemctl enable --now snapd
+# 建立软链接
+sudo ln -s /var/lib/snapd/snap /snap
+# 安装内核
+sudo snap install core
+# 安装certbot
+sudo snap install --classic certbot
+# 添加软链接
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+```
+
+```bash
+（1）挂载光盘到指定目录mount -t iso9660 /dev/cdrom /mnt/cdrom
+（2）挂载作为本地源cd /etc/yum.repos.d
+#如有repo文件，先备份为.bak文件，然后删除repo文件，否则会冲突#例如：#cp centos.repo centos.repo && rm centos.repo编辑本地源文件local.repovim /etc/yum.repos.d/local.repo
+（3）修改为以下内容[local]name=cdrom
+baseurl=file:///mnt/cdrom
+enabled=1
+gpgcheck=0
+#gpgkey=file:///mnt/cdrom/***
+```
+
+## 22 Ubuntu 设置iso文件作为本地源
+
+```bash
+#创建挂载目录sudo mkdir /mnt/cdrom
+#进行挂载sudo mount -t iso9660 -o loop /dev/sr0 /mnt/cdrom
+#or mount -t auto /dev/sr0 /mnt/cdrom#添加本地目录到软件源sudo apt-cdrom -m -d=/mnt/cdrom add
+#检测apt源cat /etc/apt/sources.list
+#出现下面这个字段表示已经挂载完成deb cdrom:[Ubuntu 22.04.1 LTS _Jammy Jellyfish_ - Release amd64 (20220809.1)]/ jammy main restricted
+#进行本地库依赖更新apt-get update
+#升级软件包apt-get upgrade
+#常用依赖安装apt-get install build-essential
+#对于libc6-i386#把原来的版本删除后，再进行安装dpkg -l | grep libc6-i386
+dpkg -r libc6-i386
+dpkg -l | grep libgo
+dpkg -r libgompl
+#执行完成后再进行libc-i386安装apt-get install libc6-i386
+#安装完成后再安装build-essentialapt-get install essential
+#成功执行后，说明一些必要的依赖都已经安装完成gcc -v
+```
+
+### 22.1 Ubuntu/Debian软件包相关操作
+
+```bash
+sudo apt-get update: 升级安装包相关的命令,刷新可安装的软件列表(但是不做任何实际的安装动作)sudo apt-get upgrade: 进行安装包的更新(软件版本的升级)sudo apt-get dist-upgrade: 进行系统版本的升级(Ubuntu版本的升级)sudo do-release-upgrade: Ubuntu官方推荐的系统升级方式,若加参数-d还可以升级到开发版本,但会不稳定
+sudo apt-get autoclean: 清理旧版本的软件缓存
+sudo apt-get clean: 清理所有软件缓存
+sudo apt-get autoremove: 删除系统不再使用的孤立软件
+apt（Advanced Packaging Tool）是一个在 Debian 和 Ubuntu 中的 Shell 前端软件包管理器。 apt 命令提供了查找、安装、升级、删除某一个、一组甚至全部软件包的命令，而且命令简洁而又好记。 apt 命令执行需要超级管理员权限(root)。apt 常用命令
+列出所有可更新的软件清单命令：sudo apt update
+升级软件包：sudo apt upgrade
+列出可更新的软件包及版本信息：apt list --upgradeable升级软件包，升级前先删除需要更新软件包：sudo apt full-upgrade
+安装指定的软件命令：sudo apt install <package_name>安装多个软件包：sudo apt install <package_1> <package_2> <package_3>更新指定的软件命令：sudo apt update <package_name>显示软件包具体信息,例如：版本号，安装大小，依赖关系等等：sudo apt show <package_name>删除软件包命令：sudo apt remove <package_name>清理不再使用的依赖和库文件: sudo apt autoremove
+移除软件包及配置文件: sudo apt purge <package_name>查找软件包命令： sudo apt search keyword
+列出所有已安装的包：apt list --installed列出所有已安装的包的版本信息：apt list --all-versions#实例查看一些可更新的包：sudo apt update
+升级安装包：sudo apt upgrade
+#在以上交互式输入字母 Y 即可开始升级，可以将以下两个命令组合起来，一键升级：sudo apt update && sudo apt upgrade -y
+```
+
+### 22.2 Debian/Ubuntu系统命令终端提示
+sudo: gedit：找不到命令 解决方法
+
+```
+原因：gedit文件损坏导致。
+解决方法：重新安装 gedit 即可
+sudo apt-get install gedit
+如果无法安装，可先卸载gedit
+sudo apt-get remove gedit
+
+```
+
+#### Ubuntu install libc-dev
+
+```
+sudo apt install libc6-dev
+
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Some packages could not be installed. This may mean that you have
+requested an impossible situation or if you are using the unstable
+distribution that some required packages have not yet been created
+or been moved out of Incoming.
+The following information may help to resolve the situation:
+
+The following packages have unmet dependencies:
+libc6-dev : Depends: libc6 (= 2.35-0ubuntu3) but 2.35-0ubuntu3.1 is to be installed
+E: Unable to correct problems, you have held broken packages.
+
+sudo apt install libc6=2.35-0ubuntu3
+
+```
+
+#### Ubuntu install
+python3-lib2to3
+
+```
+The following packages have unmet dependencies: python3-distutils : Depends: python3-lib2to3 (= 3.10.4-0ubuntu1) but 3.10.6-1~22.04 is to be installed
+
+sudo apt --fix-missing purge $(dpkg -l | grep 'python3\\.1[01]' | awk '{print $2}')
+
+```
+
+#### Ubuntu查看crontab运行日志
+
+```
+#安装日志服务
+apt-get install rsyslog
+#修改配置文件
+vim /etc/rsyslog.d/50-default.conf
+#取消 cron 行的注释 重启 系统日志服务
+sudo service rsyslog restart
+
+#crontab定时任务
+
+*    *     *     *     *  Run
+min  hour data month week Run
+
+```
 
 
 
