@@ -767,7 +767,7 @@ sudo chmod 644 /etc/apache2/dav_svn.passwd
 
 ```
 
-# 9 Linux给普通用户赋予sudo权限
+## 9 Linux给普通用户赋予sudo权限
 
 ```bash
 Linux中普通用户用sudo执行命令时报”xxx is not in the sudoers file.This
@@ -793,7 +793,7 @@ youuser ALL=(ALL) NOPASSWD: ALL
 
 ```
 
-# 10 VMware虚拟机Centos扩容
+## 10 VMware虚拟机Centos扩容
 
 https://juejin.cn/post/6916366875685289991
 
