@@ -1,7 +1,6 @@
 # Others
 some notes
-## Linux install v2ray
-### 1 Linux安装 v 2
+## 1 Linux安装 v 2
 ### 1.1 安装命令
 ```bash
 
