@@ -1,14 +1,18 @@
 # 1.安装nginx和v2ray
+```sh
 sudo apt-get install nginx
 #安裝和更新 V2Ray
 bash <(curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh)
 #安裝最新發行的 geoip.dat 和 geosite.dat
 bash <(curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-dat-release.sh)
+```
 
 # 2.配置nginx.conf和v2ray.conf文件
 ## 2.1 在/etc/nginx/sites-available/default中，把下面这两句话注释掉(如果nginx打不开)
+```sh
 #listen 80 default_server;
 #listen [::]:80 default_server;
+```
 
 ## 2.2 修改nginx.conf文件如下
 ```sh
