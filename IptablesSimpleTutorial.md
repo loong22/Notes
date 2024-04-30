@@ -1,6 +1,9 @@
 # 1.Install iptables
 ```sh
+#Ubuntu
 apt-get install iptables
+
+#Centos
 yum install iptables
 ```
 
@@ -15,7 +18,7 @@ iptables -t nat -A POSTROUTING -j MASQUERADE
 
 # 3.Save
 ```sh
-#ubuntu
+#Ubuntu
 apt-get install iptables-persistent
 iptables-save
 
