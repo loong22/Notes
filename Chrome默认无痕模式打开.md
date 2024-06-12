@@ -9,4 +9,5 @@
 最后参数更改为 ```--incognito --single-argument %1```
 
 示例
+
 "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --incognito --single-argument %1
