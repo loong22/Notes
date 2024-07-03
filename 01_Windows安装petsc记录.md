@@ -76,10 +76,10 @@ https://file.iplcn2.com/intel-mpi-petsc-3.14.6-double.rar
 	/usr/bin/python ./configure --with-debugging=0 --with-blaslapack-lib="-L/cygdrive/c/PROGRA~2/Intel/oneAPI/mkl/2024.1/lib mkl_intel_lp64_dll.lib mkl_sequential_dll.lib mkl_core_dll.lib" --with-fc=0 --with-precision="double" --with-mpi-include=/cygdrive/c/PROGRA~2/Intel/oneAPI/mpi/2021.12/include --with-mpi-lib=/cygdrive/c/PROGRA~2/Intel/oneAPI/mpi/2021.12/lib/impi.lib --with-mpiexec="/cygdrive/c/PROGRA~2/Intel/oneAPI/mpi/2021.12/bin/mpiexec.exe -localonly" --prefix="../intel-mpi-petsc-3.13.6-double" --with-shared-libraries=0 
 
 ## 5.4如果configure成功的话,也会在Cygwin界面上输出下一步make和make install的命令
+	#注意自己所在的真实路径
+	make PETSC_DIR=/home/[admin]/petsc-3.13.6 PETSC_ARCH=arch-mswin-c-opt all
 	
-	make PETSC_DIR=/home/admin/petsc-3.13.6 PETSC_ARCH=arch-mswin-c-opt all
-	
-	make PETSC_DIR=/home/admin/petsc-3.13.6 PETSC_ARCH=arch-mswin-c-opt install
+	make PETSC_DIR=/home/[admin]/petsc-3.13.6 PETSC_ARCH=arch-mswin-c-opt install
 	
 	#下面这两个命令可以不用输入没关系
 	#/usr/bin/make  --no-print-directory -f makefile PETSC_ARCH=arch-mswin-c-opt PETSC_DIR=/home/admin/petsc-3.13.6 mpi4py-install petsc4py-install libmesh-install mfem-install slepc-install hpddm-install amrex-install
