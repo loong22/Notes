@@ -67,6 +67,11 @@ wget -N --no-check-certificate "https://raw.githubusercontent.com/chiakge/Linux-
 bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install_en.sh)
 ```
 
+```
+# install command  指定版本
+bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh) 0.3.4.4
+```
+
 # 6.流媒体检测
 
 ```
