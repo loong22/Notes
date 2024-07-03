@@ -1,18 +1,32 @@
 # <center><b>在Windows平台上安装运行petsc环境</b></center>
 
-#petsc官方Windows安装教程地址:https://petsc.org/release/install/windows/
+#petsc官方Windows安装教程地址:
 
-#petsc下载地址:https://www.mcs.anl.gov/petsc/mirror/release-snapshots/
+https://petsc.org/release/install/windows/
 
-#Intel编译套件下载地址:https://www.intel.com/content/www/us/en/developer/tools/oneapi/toolkits.html
+#petsc下载地址:
 
-#VS2019在线下载地址(在这个页面看到的,下面三个链接直达):https://developerinsider.co/download-visual-studio-2019-web-installer-iso-community-professional-enterprise/
+https://www.mcs.anl.gov/petsc/mirror/release-snapshots/
 
-#Visual Studio Community 2019在线安装下载地址: https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&rel=16&ref=developerinsider.co
+#Intel编译套件下载地址:
 
-#Visual Studio Professional 2019在线安装下载地址:https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Professional&rel=16&ref=developerinsider.co
+https://www.intel.com/content/www/us/en/developer/tools/oneapi/toolkits.html
 
-#Visual Studio Enterprise 2019在线安装下载地址:https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Enterprise&rel=16&ref=developerinsider.co
+#VS2019在线下载地址(在这个页面看到的,下面三个链接直达):
+
+https://developerinsider.co/download-visual-studio-2019-web-installer-iso-community-professional-enterprise/
+
+#Visual Studio Community 2019在线安装下载地址: 
+
+https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&rel=16&ref=developerinsider.co
+
+#Visual Studio Professional 2019在线安装下载地址:
+
+https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Professional&rel=16&ref=developerinsider.co
+
+#Visual Studio Enterprise 2019在线安装下载地址:
+
+https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Enterprise&rel=16&ref=developerinsider.co
 
 # 0.懒人包(已经编译好的包基于Win10 22H2，Intel oneAPI 2024，VS2019)
 
@@ -51,7 +65,7 @@ https://file.iplcn2.com/intel-mpi-petsc-3.14.6-double.rar
 	
 	## 5.3进入解压后的目录,开始configure(configure中配置的路径都是软件安装的默认路径,如果有安装到其他目录要进行修改,--prefix可以自定义安装路径)
 	
-	cd petsc-3.13.6.tar.gz
+	cd petsc-3.13.6
 	
 	/usr/bin/python ./configure --with-debugging=0 --with-blaslapack-lib="-L/cygdrive/c/PROGRA~2/Intel/oneAPI/mkl/2024.1/lib mkl_intel_lp64_dll.lib mkl_sequential_dll.lib mkl_core_dll.lib" --with-fc=0 --with-precision="double" --with-mpi-include=/cygdrive/c/PROGRA~2/Intel/oneAPI/mpi/2021.12/include --with-mpi-lib=/cygdrive/c/PROGRA~2/Intel/oneAPI/mpi/2021.12/lib/impi.lib --with-mpiexec="/cygdrive/c/PROGRA~2/Intel/oneAPI/mpi/2021.12/bin/mpiexec.exe -localonly" --prefix="../intel-mpi-petsc-3.13.6-double" --with-shared-libraries=0 
 
