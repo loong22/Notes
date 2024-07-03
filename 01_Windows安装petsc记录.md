@@ -28,7 +28,7 @@ https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Prof
 
 https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Enterprise&rel=16&ref=developerinsider.co
 
-# 0.懒人包(已经编译好的包基于Win10 22H2，Intel oneAPI 2024，VS2019)
+# 0/6 懒人包(已经编译好的包基于Win10 22H2，Intel oneAPI 2024，VS2019)
 
 https://file.iplcn2.com/Cygwin64-2.931.rar
 
@@ -60,48 +60,48 @@ https://file.iplcn2.com/intel-mpi-petsc-3.14.6-double.rar
 
 # 5/6 在Cygwin下的编译命令
 
-	## 5.1先修改Cygwin的环境变量(因为是用VS2019打开的Cygwin)
+## 5.1先修改Cygwin的环境变量(因为是用VS2019打开的Cygwin)
 	#把/usr/bin/link.exe改名为/usr/bin/ling-cygwin.exe(会和ifort冲突?如果不使用Fortran编译的话无所谓,可以不改)
 	
 	export PATH=$PATH:/usr/bin/
 
-	## 5.2把源码包放在/home/[用户名]下,输入下面的命令来解压petsc源码包
+## 5.2把源码包放在/home/[用户名]下,输入下面的命令来解压petsc源码包
 	
 	tar zxvf petsc-3.13.6.tar.gz
 	
-	## 5.3进入解压后的目录,开始configure(configure中配置的路径都是软件安装的默认路径,如果有安装到其他目录要进行修改,--prefix可以自定义安装路径)
+## 5.3进入解压后的目录,开始configure(configure中配置的路径都是软件安装的默认路径,如果有安装到其他目录要进行修改,--prefix可以自定义安装路径)
 	
 	cd petsc-3.13.6
 	
 	/usr/bin/python ./configure --with-debugging=0 --with-blaslapack-lib="-L/cygdrive/c/PROGRA~2/Intel/oneAPI/mkl/2024.1/lib mkl_intel_lp64_dll.lib mkl_sequential_dll.lib mkl_core_dll.lib" --with-fc=0 --with-precision="double" --with-mpi-include=/cygdrive/c/PROGRA~2/Intel/oneAPI/mpi/2021.12/include --with-mpi-lib=/cygdrive/c/PROGRA~2/Intel/oneAPI/mpi/2021.12/lib/impi.lib --with-mpiexec="/cygdrive/c/PROGRA~2/Intel/oneAPI/mpi/2021.12/bin/mpiexec.exe -localonly" --prefix="../intel-mpi-petsc-3.13.6-double" --with-shared-libraries=0 
 
-	## 5.4如果configure成功的话,也会在Cygwin界面上输出下一步make和make install的命令
+## 5.4如果configure成功的话,也会在Cygwin界面上输出下一步make和make install的命令
 	
 	make PETSC_DIR=/home/admin/petsc-3.13.6 PETSC_ARCH=arch-mswin-c-opt all
-
+	
 	make PETSC_DIR=/home/admin/petsc-3.13.6 PETSC_ARCH=arch-mswin-c-opt install
-
+	
 	#下面这两个命令可以不用输入没关系
 	#/usr/bin/make  --no-print-directory -f makefile PETSC_ARCH=arch-mswin-c-opt PETSC_DIR=/home/admin/petsc-3.13.6 mpi4py-install petsc4py-install libmesh-install mfem-install slepc-install hpddm-install amrex-install
 	#make PETSC_DIR=/home/admin/3.13.6-intel-mpi PETSC_ARCH="" check
 
 # 6/6 VS2019中项目设置
-	## 6.1新建空白C++项目 
-		修改C++编译器为Intel C++ 2024(选中项目 -> 鼠标右键 -> Intel Compiler修改, 或者进入项目属性页面进行修改)
-		#设置Intel Libraries for oneAPI选项(这个选项测试通过,未测试设置为其他选项是否可行)
-		Use Intel IPP = Static Library
-		Use oneMKL = Parallel
-		Use MPI Library = Intel MPI Library
+## 6.1新建空白C++项目 
+	修改C++编译器为Intel C++ 2024(选中项目 -> 鼠标右键 -> Intel Compiler修改, 或者进入项目属性页面进行修改)
+	#设置Intel Libraries for oneAPI选项(这个选项测试通过,未测试设置为其他选项是否可行)
+	Use Intel IPP = Static Library
+	Use oneMKL = Parallel
+	Use MPI Library = Intel MPI Library
 	
-	## 6.2点击鼠标右键设置VC目录和静态链接库
+## 6.2点击鼠标右键设置VC目录和静态链接库
 		#VC目录设置
 		C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt;C:\cygwin64\home\Administrator\intel-mpi-petsc-3.13.6-double\include;C:\Program Files %28x86%29\Intel\oneAPI\mpi\2021.12\include;$(IncludePath)
 		#静态链接库设置
 		C:\cygwin64\home\Administrator\intel-mpi-petsc-3.13.6-double\lib\libpetsc.lib;C:\Program Files (x86)\Intel\oneAPI\mpi\2021.12\lib\impi.lib;%(AdditionalDependencies)
 	
 	
-	## 6.3输入下面的示例代码进行编译测试(能输出结果就是可以了)
- 
+## 6.3输入下面的示例代码进行编译测试(能输出结果就是可以了)
+
 ```cpp
 static char help[] = "Solves a linear system in parallel with KSP.\n\n";
 
@@ -367,7 +367,7 @@ TEST*/
 
 ```
 
-	## 6.4Done
+## 6.4Done
 
 
 
