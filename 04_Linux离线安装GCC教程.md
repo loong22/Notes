@@ -1,17 +1,29 @@
 # 1、下载相关依赖包
 
-官方离线包下载网站 https://ftp.gnu.org/gnu/ 清华大学镜像站
+官方离线包下载网站：
+https://ftp.gnu.org/gnu/ 
+
+清华大学镜像站：
 https://mirrors.tuna.tsinghua.edu.cn/gnu/
 
 1、m4
-https://ftp.gnu.org/gnu/m4/m4-1.4.18.tar.gz 
+
+https://ftp.gnu.org/gnu/m4/m4-1.4.18.tar.gz
+
 2、gmp
-ftp://gcc.gnu.org/pub/gcc/infrastructure/gmp-6.1.0.tar.bz2 
+
+ftp://gcc.gnu.org/pub/gcc/infrastructure/gmp-6.1.0.tar.bz2
+
 3、mpfr
-ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-3.1.4.tar.bz2 
+
+ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-3.1.4.tar.bz2
+
 4、mpc
-ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-1.0.3.tar.gz 
+
+ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-1.0.3.tar.gz
+
 5、gcc
+
 https://ftp.gnu.org/gnu/gcc/gcc-9.5.0/gcc-9.5.0.tar.gz
 
 # 2、安装
