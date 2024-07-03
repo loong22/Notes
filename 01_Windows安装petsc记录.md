@@ -37,9 +37,9 @@ https://file.iplcn2.com/intel-mpi-petsc-3.13.6-double.rar
 https://file.iplcn2.com/intel-mpi-petsc-3.14.6-double.rar
 
 
-# 1.安装VS2019(包含C++桌面开发)
+# 1/6 安装VS2019(包含C++桌面开发)
 
-# 2.安装intel oneAPI 2024基础套件，再安装HPC套件(如果没有检测到VS2019IDE,必须重装VS2019(或者Repair修复安装),检测到了才能安装Intel)
+# 2/6 安装intel oneAPI 2024基础套件，再安装HPC套件(如果没有检测到VS2019IDE,必须重装VS2019(或者Repair修复安装),检测到了才能安装Intel)
 	## 2.1设置Intel的环境变量,必须要,不然后面程序运行会报错或者运行没反应
  
 	#打开系统属性 -> 环境变量 -> 系统变量 -> PATH
@@ -48,11 +48,17 @@ https://file.iplcn2.com/intel-mpi-petsc-3.14.6-double.rar
 	C:\Program Files (x86)\Intel\oneAPI\mpi\2021.12\bin
 	C:\Program Files (x86)\Intel\oneAPI\mkl\2024.1\bin
 
-# 3.安装cygwin64(要求必须要有python3和make组件)
+# 3/6 安装cygwin64(要求必须要有python3和make组件)
+```
+#请查看官方文档
+```
 
-# 4.使用管理员模式打开VS2019 x64 native Tools 命令行, cd打开Cygwin路径下的bin目录，输入mintty.exe打开Cygwin
+# 4/6 使用管理员模式打开VS2019 x64 native Tools 命令行, cd打开Cygwin路径下的bin目录，输入mintty.exe打开Cygwin
+```
+#默认在C盘下
+```
 
-# 5.在Cygwin下的编译命令
+# 5/6 在Cygwin下的编译命令
 
 	## 5.1先修改Cygwin的环境变量(因为是用VS2019打开的Cygwin)
 	#把/usr/bin/link.exe改名为/usr/bin/ling-cygwin.exe(会和ifort冲突?如果不使用Fortran编译的话无所谓,可以不改)
@@ -79,7 +85,7 @@ https://file.iplcn2.com/intel-mpi-petsc-3.14.6-double.rar
 	#/usr/bin/make  --no-print-directory -f makefile PETSC_ARCH=arch-mswin-c-opt PETSC_DIR=/home/admin/petsc-3.13.6 mpi4py-install petsc4py-install libmesh-install mfem-install slepc-install hpddm-install amrex-install
 	#make PETSC_DIR=/home/admin/3.13.6-intel-mpi PETSC_ARCH="" check
 
-# 6.VS2019中项目设置
+# 6/6 VS2019中项目设置
 	## 6.1新建空白C++项目 
 		修改C++编译器为Intel C++ 2024(选中项目 -> 鼠标右键 -> Intel Compiler修改, 或者进入项目属性页面进行修改)
 		#设置Intel Libraries for oneAPI选项(这个选项测试通过,未测试设置为其他选项是否可行)
