@@ -1,7 +1,9 @@
 
 # Centos
 
-教程地址:https://www.junle.org/CentOS7%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85shadowsocks-libev-simple-obfs%E6%B7%B7%E6%B7%86/
+教程地址:
+
+https://www.junle.org/CentOS7%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85shadowsocks-libev-simple-obfs%E6%B7%B7%E6%B7%86/
 
 ## 1.安装shadowsocks-libev
 
