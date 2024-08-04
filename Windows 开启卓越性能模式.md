@@ -5,6 +5,7 @@ Win10系统是：“Windows Powershell(管理员)(A)”，
 Win11系统是：“Windows 终端(管理员)”
 
 2、输入命令并回车
+
 卓越性能：
 powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61
 
